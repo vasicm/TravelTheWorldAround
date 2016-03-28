@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<h:form>
+		<h:panelGrid columns="2">
+			<h:outputLabel value="Korisnicko ime:" />
+			<h:inputText value="#{userBean.user.username}" />
+			<h:outputLabel value="Lozinka:" />
+			<h:inputSecret value="#{userBean.user.password}" />
+			<h:outputLabel value="Ime" />
+			<h:inputText value="#{userBean.user.name}" />
+			<h:outputLabel value="Prezime" />
+			<h:inputText value="#{userBean.user.surname}" />
+			<h:outputLabel value="e mail" />
+			<h:inputText value="#{userBean.user.eMail}" />
+			<h:outputLabel value="Kratka bigrafija" />
+			<h:inputText value="#{userBean.user.bio}" />
+			<h:outputLabel value="Datum:" />
+			<p:calendar value="#{userBean.user.brDate}" ></p:calendar>
+			<h:outputLabel value="Grupa:" />
+	        <p:selectOneRadio value="#{userBean.user.group}">
+	            <f:selectItem itemLabel="Registrovani korisnik" itemValue="reg" />
+	            <f:selectItem itemLabel="Administrator" itemValue="admin" />
+	        </p:selectOneRadio>
+			<h:outputLabel />
+			<h:commandButton action="#{userBean.signUp}" value="Registruj se" />
+		</h:panelGrid>
+	</h:form>
+
+</ui:composition>
+
+</html>

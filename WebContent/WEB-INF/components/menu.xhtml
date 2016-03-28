@@ -1,0 +1,27 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition>
+	<h:form>
+		<div class="link">
+			<h:outputLink value="index.xhtml">
+				<h:outputText value="Pocetna" />
+			</h:outputLink>
+		</div>
+		<div class="link">
+			<h:outputLink value="travelogues.xhtml">
+				<h:outputText value="Putopisi" />
+			</h:outputLink>
+		</div>
+		<div class="link">
+			<h:outputLink rendered="#{!userBean.loggedIn}" value="signUp.xhtml">
+				<h:outputText value="Registruj se" />
+			</h:outputLink>
+			<h:commandLink rendered="#{userBean.loggedIn}"
+				action="#{userBean.logout}" value="Odjavi se" />
+		</div>
+
+	</h:form>
+</ui:composition>
+</html>

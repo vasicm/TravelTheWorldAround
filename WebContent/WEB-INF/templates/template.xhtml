@@ -1,0 +1,42 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title><ui:insert name="title" /></title>
+  	
+	<link rel="stylesheet" type="text/css" href="../css/style1.css" />
+<!-- -->
+</h:head>
+
+<div id="mainContentArea">
+	<div id="contentBox">
+		<div id="title">
+			<ui:insert name="title" />
+		</div>
+
+		<div id="linkGroup">
+			<ui:insert name="menu" />
+		</div>
+
+		<div id="blueBox">
+			<div id="header"></div>
+			<div class="userLogin">
+				<h:outputText rendered="#{userBean.loggedIn}"
+					value="Prijavljeni ste kao: #{userBean.user.username}"></h:outputText>
+				<h:outputText rendered="#{!userBean.loggedIn}" value="Prijavite se!"></h:outputText>
+			</div>
+			<div class="contentTitle">
+				<ui:insert name="contentTitle" />
+			</div>
+			<div class="pageContent">
+				<ui:insert name="pageContent" />
+			</div>
+			<div id="footer">
+				<ui:insert name="footer" />
+			</div>
+		</div>
+	</div>
+</div>
+</html>
