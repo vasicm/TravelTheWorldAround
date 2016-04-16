@@ -4,6 +4,7 @@ import dto.User;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.Date;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -12,14 +13,15 @@ import javax.faces.event.ComponentSystemEvent;
 import dao.UserDAO;
 
 public class UserBean {
-	private User user = new User();
-	private boolean loggedIn = false;
+	//TODO
+	private User user = new User("vaske", "1234", "", "", "", "", null,"reg");
+	private boolean loggedIn = true;
 	
 	public String login() {
 		System.out.println("\n\n*************login****************\n\n");
 		if ((user = UserDAO.selectByUsernameAndPassword(user.getUsername(), user.getPassword()))!=null) {
 			loggedIn = true;
-			return "books?faces-redirect=true";
+			return "index?faces-redirect=true";
 		}
 		user = new User();
 		loggedIn = false;
@@ -37,7 +39,7 @@ public class UserBean {
 //		ob2.print();
 //		System.out.println("\n\n\nTEST END\n\n\n");
 		//
-		return "index?faces-redirect=true";
+		return "login?faces-redirect=true";
 	}
 	
 	public String logout() {

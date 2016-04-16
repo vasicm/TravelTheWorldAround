@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<h:form>
+		<p:fieldset legend="#{travelogueBean.travelogue.locationInfo}"
+			style="margin-bottom:20px">
+			<h:outputText value="#{travelogueBean.travelogue.name}"
+				style="font-size:20px;font-weight:bold"></h:outputText>
+			<br />
+			<h:outputText value="#{travelogueBean.travelogue.text}"
+				escape="false" />
+			<h:panelGrid columns="2" cellpadding="1">
+				<h:outputText value="Date:" />
+				<h:outputText value="#{travelogueBean.travelogue.date}" />
+				<h:outputText value="Author:" />
+				<h:outputText value="#{travelogueBean.travelogue.author}" />
+			</h:panelGrid>
+		</p:fieldset>
+
+		<h:outputText value="Comments: "
+			style="font-size:18px;font-weight:bold"></h:outputText>
+		<ui:repeat value="#{travelogueBean.travelogue.comments}" var="comment">
+			<p:fieldset legend="#{comment.author}"
+				style="margin-bottom:20px;margin-left:35px">
+				<h:outputText value="#{comment.text}"
+					style="font-size:14px;font-weight:italic"></h:outputText>
+			</p:fieldset>
+		</ui:repeat>
+		<p:inputTextarea value="#{travelogueBean.comment.text}"
+			maxlength="21845" cols="150" counter="display"
+			counterTemplate="{0} characters remaining."
+			style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
+		<h:outputText id="display" />
+		<h:commandButton value="Save Comment" action="#{travelogueBean.saveComment}"></h:commandButton>
+	</h:form>
+</ui:composition>
+
+</html>

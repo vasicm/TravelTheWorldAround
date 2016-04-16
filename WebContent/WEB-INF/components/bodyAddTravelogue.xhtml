@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<h:form>
+		<p:growl id="messages" showDetail="true" />
+		<p:panel header="Travelogue">
+			<p:messages autoUpdate="true" />
+			<h:panelGrid id="grid" columns="4" cellpadding="5">
+				<h:outputLabel for="name" value="Name:" style="font-weight:bold" />
+				<p:inputText id="name" value="#{travelogueBean.travelogue.name}"
+					required="true" label="Name" maxlength="150" />
+				<p:message for="name" />
+				<h:outputText value="#{travelogueBean.travelogue.name}" />
+
+				<h:outputLabel for="locationInfo" value="Location info:"
+					style="font-weight:bold" />
+				<p:inputText id="locationInfo"
+					value="#{travelogueBean.travelogue.locationInfo}" required="true"
+					label="locationInfo" maxlength="150" />
+				<p:message for="locationInfo" />
+				<h:outputText value="#{travelogueBean.travelogue.locationInfo}" />
+
+				<h:outputLabel for="date" value="Date:" style="font-weight:bold" />
+				<p:calendar value="#{travelogueBean.travelogue.date}"
+					required="true" label="date"></p:calendar>
+				<h:outputText value="" />
+				<h:outputText value="" />
+			</h:panelGrid>
+			<h:outputLabel for="date" value="Travelogue content:"
+				style="font-weight:bold" />
+			<p:editor id="editor" widgetVar="editorWidget"
+				value="#{travelogueBean.travelogue.text}" width="900" height="900"/>
+
+			<h:panelGrid columns="3" style="margin-top: 10px">
+				<p:commandButton value="Save"
+					action="#{travelogueBean.saveTravelogue}" />
+
+				<p:commandButton value="Preview" update="display"
+					oncomplete="PF('dlg').show()" />
+
+				<p:commandButton value="Clear content" type="button"
+					onclick="PF('editorWidget').clear();" />
+			</h:panelGrid>
+
+			<p:dialog header="Content" widgetVar="dlg" showEffect="fade"
+				hideEffect="fade">
+				<h:outputText id="display" value="#{travelogueBean.travelogue.text}" escape="false" />
+			</p:dialog>
+
+		</p:panel>
+	</h:form>
+</ui:composition>
+
+</html>

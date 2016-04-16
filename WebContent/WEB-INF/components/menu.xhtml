@@ -6,20 +6,35 @@
 	<h:form>
 		<div class="link">
 			<h:outputLink value="index.xhtml">
-				<h:outputText value="Pocetna" />
+				<h:outputText value="Home" />
 			</h:outputLink>
 		</div>
 		<div class="link">
 			<h:outputLink value="travelogues.xhtml">
-				<h:outputText value="Putopisi" />
+				<h:outputText value="Travelogues" />
+			</h:outputLink>
+		</div>
+		<div class="link">
+			<h:outputLink value="addTravelogues.xhtml">
+				<h:outputText value="Add Travelogues" />
+			</h:outputLink>
+		</div>
+		<div class="link">
+			<h:outputLink value="photos.xhtml">
+				<h:outputText value="Travel Photos" />
+			</h:outputLink>
+		</div>
+		<div class="link">
+			<h:outputLink value="addPhoto.xhtml">
+				<h:outputText value="Add Photo" />
 			</h:outputLink>
 		</div>
 		<div class="link">
 			<h:outputLink rendered="#{!userBean.loggedIn}" value="signUp.xhtml">
-				<h:outputText value="Registruj se" />
+				<h:outputText value="Sign up" />
 			</h:outputLink>
 			<h:commandLink rendered="#{userBean.loggedIn}"
-				action="#{userBean.logout}" value="Odjavi se" />
+				action="#{userBean.logout}" value="Log out" />
 		</div>
 
 	</h:form>

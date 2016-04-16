@@ -11,9 +11,14 @@ public class Travelogue {
 	private String locationInfo;
 	private String text;
 	private String author;
+	private int state;
+	private float rating;
+	private int votes;
+	private int shares;
 	private List<Comment> comments;
 	public Travelogue() {
 		super();
+		this.id = -1;
 	}
 	public Travelogue(int id, String name, Date date, String locationInfo, String text, String author,
 			List<Comment> comments) {
@@ -24,6 +29,22 @@ public class Travelogue {
 		this.locationInfo = locationInfo;
 		this.text = text;
 		this.author = author;
+		this.comments = comments;
+	}
+
+	public Travelogue(int id, String name, Date date, String locationInfo, String text, String author, int state,
+			float rating, int votes, int shares, List<Comment> comments) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.date = date;
+		this.locationInfo = locationInfo;
+		this.text = text;
+		this.author = author;
+		this.state = state;
+		this.rating = rating;
+		this.votes = votes;
+		this.shares = shares;
 		this.comments = comments;
 	}
 	public int getId() {
@@ -69,6 +90,33 @@ public class Travelogue {
 		this.comments = comments;
 	}
 	public void addComment(Comment comm) {
-		comments.add(comm);
+		if(comments != null) {
+			comments.add(comm);
+		}
 	}
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
+	}
+	public float getRating() {
+		return rating;
+	}
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
+	public int getVotes() {
+		return votes;
+	}
+	public void setVotes(int votes) {
+		this.votes = votes;
+	}
+	public int getShares() {
+		return shares;
+	}
+	public void setShares(int shares) {
+		this.shares = shares;
+	}
+	
 }

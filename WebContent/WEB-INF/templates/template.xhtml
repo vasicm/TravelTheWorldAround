@@ -25,7 +25,7 @@
 			<div class="userLogin">
 				<h:outputText rendered="#{userBean.loggedIn}"
 					value="Prijavljeni ste kao: #{userBean.user.username}"></h:outputText>
-				<h:outputText rendered="#{!userBean.loggedIn}" value="Prijavite se!"></h:outputText>
+				<h:outputText rendered="#{!userBean.loggedIn}" value="Log in"></h:outputText>
 			</div>
 			<div class="contentTitle">
 				<ui:insert name="contentTitle" />

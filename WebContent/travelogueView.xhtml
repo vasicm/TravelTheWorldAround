@@ -2,7 +2,7 @@
 	  xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html">
-     <f:event type="preRenderView" listener="#{userBean.checkLoggedIn}" />
+      <f:event type="preRenderView" listener="#{userBean.checkLoggedIn}" />
 <h:body>
 <ui:decorate template="/WEB-INF/templates/template.xhtml">
 <ui:define name="title">
@@ -12,15 +12,13 @@
     <ui:include src="/WEB-INF/components/menu.xhtml"></ui:include>
   </ui:define>
 	<ui:define name="contentTitle">
-	    <h:outputText value="Login" />
 	</ui:define>
   <ui:define name="pageContent">
-      <ui:include src="/WEB-INF/components/bodyIndex.xhtml"></ui:include>
+      <ui:include src="/WEB-INF/components/bodyTravelogueView.xhtml"></ui:include>
   </ui:define>
 <ui:define name="footer">
       <ui:include src="/WEB-INF/components/footer.xhtml"></ui:include>
   </ui:define>
 </ui:decorate>
-
 </h:body>
 </html>

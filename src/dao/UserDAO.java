@@ -12,7 +12,8 @@ import dto.User;
 
 public class UserDAO {
 	private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool();
-	private static final String SQL_SELECT_BY_USERNAME_AND_PASSWORD = "SELECT * FROM korisnik WHERE korisnicko_ime=? AND lozinka=?";
+	private static final String SQL_SELECT_BY_USERNAME_AND_PASSWORD = "SELECT * FROM user WHERE username=? AND password=?";
+	private static final String SQL_INSERT = "INSERT INTO user (username, password, name, surname, e_mail, bio, br_date, group) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 	
 	private static String getGroup(int group) {
 		String str = new String("reg");
@@ -30,7 +31,7 @@ public class UserDAO {
 		return ret;
 	}
 	
-	private static final String SQL_INSERT = "INSERT INTO korisnik (korisnicko_ime, lozinka, ime, prezime, e_mail, kratka_biografija, datum_rodjenja, grupa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	
 	public static boolean insert(User user) {
 		boolean retVal = false;
 		Connection connection = null;
@@ -67,14 +68,14 @@ public class UserDAO {
 			rs = pstmt.executeQuery();
 			if (rs.next()){
 				user = new User(
-						rs.getString("korisnicko_ime"), 
-						rs.getString("lozinka"), 
-						rs.getString("ime"),
-						rs.getString("prezime"), 
+						rs.getString("username"), 
+						rs.getString("password"), 
+						rs.getString("name"),
+						rs.getString("surname"), 
 						rs.getString("e_mail"), 
-						rs.getString("kratka_biografija"), 
-						rs.getDate("datum_rodjenja"), 
-						getGroup(rs.getInt("grupa"))
+						rs.getString("bio"), 
+						rs.getDate("br_date"), 
+						getGroup(rs.getInt("group"))
 				);
 			}
 			pstmt.close();

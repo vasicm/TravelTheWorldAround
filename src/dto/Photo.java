@@ -6,15 +6,17 @@ public class Photo {
 	private int id;
 	private String name;
 	private String path;
+	private String author;
 	private List<Comment> comments;
 	public Photo() {
 		super();
 	}
-	public Photo(int id, String name, String path, List<Comment> comments) {
+	public Photo(int id, String name, String path, String author, List<Comment> comments) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.path = path;
+		this.author = author;
 		this.comments = comments;
 	}
 	public int getId() {
@@ -43,5 +45,11 @@ public class Photo {
 	}
 	public void addComment(Comment comm) {
 		comments.add(comm);
+	}
+	public String getAuthor() {
+		return author;
+	}
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }

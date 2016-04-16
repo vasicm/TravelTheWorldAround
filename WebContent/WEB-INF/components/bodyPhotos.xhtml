@@ -11,20 +11,14 @@
 
 <ui:composition>
 	<h:form>
-		<ui:repeat value="#{travelogueBean.travelogues}" var="travelogue">
-			<p:fieldset legend="#{travelogue.locationInfo}" style="margin-bottom:20px">
-				<h:commandLink action="#{travelogueBean.viewTravelogue}">
-				<f:setPropertyActionListener value="#{travelogue}" target="#{travelogueBean.travelogue}"></f:setPropertyActionListener>
-				<h:outputText value="#{travelogue.name}" style="font-size:20px;font-weight:bold" ></h:outputText>
-				</h:commandLink> 
-				<br/>
-				<h:outputText></h:outputText>
+		<ui:repeat value="#{photoBean.photos}" var="photo">
+			<p:fieldset legend="#{photo.name}" style="margin-bottom:20px">
+				<h:graphicImage value="/images/#{photo.path}" />
 				<h:outputText value="#{travelogue.text}" escape="false" />
+				<br/>
 				<h:panelGrid columns="2" cellpadding="1">
-						<h:outputText value="Date:" />
-						<h:outputText value="#{travelogue.date}" />
 						<h:outputText value="Author:" />
-						<h:outputText value="#{travelogue.author}" />
+						<h:outputText value="#{photo.author}" />
 					</h:panelGrid>
 			</p:fieldset>
 		</ui:repeat>
