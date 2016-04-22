@@ -11,26 +11,9 @@
 
 <ui:composition>
 	<h:form> 
-		<div>
-			<a class="twitter-timeline" href="https://twitter.com/klub_putnika"
-				data-widget-id="712309828681637888">Твитови од стране
-				@klub_putnika</a>
-			<script>
-				!function(d, s, id) {
-					var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/
-							.test(d.location) ? 'http' : 'https';
-					if (!d.getElementById(id)) {
-						js = d.createElement(s);
-						js.id = id;
-						js.src = p + "://platform.twitter.com/widgets.js";
-						fjs.parentNode.insertBefore(js, fjs);
-					}
-				}(document, "script", "twitter-wjs");
-			</script>
-		</div>
-		<p:scrollPanel style="width:573px;height:500px" >
+		<p:scrollPanel style="width:100%;height:700px" >
 			<h:outputText value="RSS feed" />
-			<p:feedReader value="http://activeadventures.com/blog/feed/" size="5"
+			<p:feedReader value="http://activeadventures.com/blog/feed/" size="10"
 				var="feed">
 
 				<h:outputText value="#{feed.title}"
@@ -40,8 +23,6 @@
 			</p:feedReader>
 		</p:scrollPanel>
 	</h:form>
-
-
 
 </ui:composition>
 

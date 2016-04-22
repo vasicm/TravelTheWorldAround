@@ -8,9 +8,11 @@
 	xmlns:o="http://omnifaces.org/ui"
 	xmlns:of="http://omnifaces.org/functions"
 	xmlns:p="http://primefaces.org/ui">
-
 <ui:composition>
 	<h:form>
+
+		<p:growl id="messages" showDetail="true" />
+
 		<p:fieldset legend="#{travelogueBean.travelogue.locationInfo}"
 			style="margin-bottom:20px">
 			<h:outputText value="#{travelogueBean.travelogue.name}"
@@ -18,13 +20,48 @@
 			<br />
 			<h:outputText value="#{travelogueBean.travelogue.text}"
 				escape="false" />
+
+			<h:outputLink rendered="#{travelogueBean.travelogueEditable}"
+				value="addTravelogues.xhtml?id=#{travelogueBean.travelogue.id}">
+				<p:button value="Edit travelogue"></p:button>
+			</h:outputLink>
+
+			<p:commandButton rendered="#{userBean.administrator}" value="Approve"
+				actionListener="#{travelogueBean.approve}" />
+
+			<p:commandButton rendered="#{userBean.administrator}"
+				value="Unapprove" actionListener="#{travelogueBean.unapprove}" />
+
 			<h:panelGrid columns="2" cellpadding="1">
 				<h:outputText value="Date:" />
 				<h:outputText value="#{travelogueBean.travelogue.date}" />
 				<h:outputText value="Author:" />
 				<h:outputText value="#{travelogueBean.travelogue.author}" />
+				<h:outputText value="Rating:" />
+				<p:rating value="#{travelogueBean.travelogue.ratingInteger}"
+					readonly="true" stars="10" />
 			</h:panelGrid>
 		</p:fieldset>
+
+		<h:panelGrid columns="2" cellpadding="1">
+			<h:outputText value="Rate:" />
+			<p:rating value="#{travelogueBean.rating}" stars="10">
+				<p:ajax event="rate" listener="#{travelogueBean.onrate}"
+					update="messages" />
+				<p:ajax event="cancel" listener="#{travelogueBean.oncancel}"
+					update="messages" />
+			</p:rating>
+
+			<h:outputText value="Share: " />
+			<h:outputText value="#{travelogueBean.facebookShare}" escape="false"></h:outputText>
+
+			<h:outputText value="" />
+			<p:commandButton value="Download" ajax="false"
+				icon="ui-icon-arrowthick-1-s">
+				<p:fileDownload value="#{travelogueBean.traveloguePDF}" />
+			</p:commandButton>
+		</h:panelGrid>
+		<br />
 
 		<h:outputText value="Comments: "
 			style="font-size:18px;font-weight:bold"></h:outputText>
@@ -40,7 +77,8 @@
 			counterTemplate="{0} characters remaining."
 			style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
 		<h:outputText id="display" />
-		<h:commandButton value="Save Comment" action="#{travelogueBean.saveComment}"></h:commandButton>
+		<h:commandButton value="Save Comment"
+			action="#{travelogueBean.saveComment}"></h:commandButton>
 	</h:form>
 </ui:composition>
 

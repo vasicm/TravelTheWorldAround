@@ -11,6 +11,15 @@
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
+		<managed-bean-name>photoBean</managed-bean-name>
+		<managed-bean-class>beans.PhotoBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<property-name>userBean</property-name>
+			<value>#{userBean}</value>
+		</managed-property>
+	</managed-bean>
+	<managed-bean>
 		<managed-bean-name>travelogueBean</managed-bean-name>
 		<managed-bean-class>beans.TravelogueBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
@@ -29,9 +38,5 @@
 		<managed-bean-class>beans.FileUploadView</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>photoBean</managed-bean-name>
-		<managed-bean-class>beans.PhotoBean</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
+
 </faces-config>

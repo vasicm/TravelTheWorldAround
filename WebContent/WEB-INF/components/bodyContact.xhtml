@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<h:form>
+		<h:outputText value="My contact:"
+			style="font-size:30px;font-weight:bold"></h:outputText>
+		<ui:repeat value="#{userBean.allUsersInContact}" var="user">
+			<p:fieldset legend="#{user.username}" style="margin-bottom:20px">
+				<h:outputText></h:outputText>
+				<h:panelGrid columns="2" cellpadding="1">
+					<h:outputText value="Name:" />
+					<h:outputText value="#{user.name}" />
+					<h:outputText value="Surname:" />
+					<h:outputText value="#{user.surname}" />
+					<h:outputText value="Biography" />
+					<h:outputText value="#{user.bio}" />
+					<h:outputText value="e mail" />
+					<h:outputText value="#{user.eMail}" />
+					<h:outputText value="Birthday date" />
+					<h:outputText value="#{user.brDate}" />
+					<h:outputText />
+					<h:commandLink action="#{userBean.messages}">
+						<f:setPropertyActionListener value="#{user}"
+							target="#{userBean.selectedUser}"></f:setPropertyActionListener>
+						<p:button value="Message"></p:button>
+					</h:commandLink>
+				</h:panelGrid>
+
+			</p:fieldset>
+		</ui:repeat>
+		<h:outputText value="Add new contact:"
+			style="font-size:30px;font-weight:bold"></h:outputText>
+
+		<h:panelGrid columns="3" cellpadding="5">
+			<h:outputLabel for="search" value="Search: *" />
+			<p:inputText id="search" value="#{userBean.search}"
+				label="search">
+			</p:inputText>
+		</h:panelGrid>
+		<ui:repeat value="#{userBean.allUsersNotInContact}" var="user">
+			<p:fieldset legend="#{user.username}" style="margin-bottom:20px">
+				<h:outputText></h:outputText>
+				<h:panelGrid columns="2" cellpadding="1">
+					<h:outputText value="Name:" />
+					<h:outputText value="#{user.name}" />
+					<h:outputText value="Surname:" />
+					<h:outputText value="#{user.surname}" />
+					<h:outputText value="Biography" />
+					<h:outputText value="#{user.bio}" />
+					<h:outputText value="e mail" />
+					<h:outputText value="#{user.eMail}" />
+					<h:outputText value="Birthday date" />
+					<h:outputText value="#{user.brDate}" />
+					<h:outputText />
+					<h:commandLink action="#{userBean.addContact}">
+						<f:setPropertyActionListener value="#{user}"
+							target="#{userBean.selectedUser}"></f:setPropertyActionListener>
+						<p:button value="Add contact"></p:button>
+					</h:commandLink>
+				</h:panelGrid>
+
+			</p:fieldset>
+		</ui:repeat>
+	</h:form>
+</ui:composition>
+
+</html>

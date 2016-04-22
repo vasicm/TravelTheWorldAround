@@ -10,6 +10,7 @@ public class Photo {
 	private List<Comment> comments;
 	public Photo() {
 		super();
+		id = -1;
 	}
 	public Photo(int id, String name, String path, String author, List<Comment> comments) {
 		super();

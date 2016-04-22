@@ -10,18 +10,97 @@
 	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition>
-	<h:form>
+	<h:form id="form">
 		<ui:repeat value="#{photoBean.photos}" var="photo">
-			<p:fieldset legend="#{photo.name}" style="margin-bottom:20px">
-				<h:graphicImage value="/images/#{photo.path}" />
-				<h:outputText value="#{travelogue.text}" escape="false" />
-				<br/>
-				<h:panelGrid columns="2" cellpadding="1">
+			<h:panelGrid columns="2" style="width:100%"
+				columnClasses="logo,detail">
+				<p:commandLink update=":form:photoDetail"
+					oncomplete="PF('photoDialog').show()">
+					<f:setPropertyActionListener value="#{photo}"
+						target="#{photoBean.photo}" />
+					<h:graphicImage value="/images/#{photo.path}" width="250px" />
+				</p:commandLink>
+
+				<p:outputPanel>
+					<h:panelGrid columns="2" cellpadding="5">
+						<h:outputText value="Id:" />
+						<h:outputText value="#{photo.id}" style="font-weight: bold" />
+
+						<h:outputText value="Name:" />
+						<h:outputText value="#{photo.name}" style="font-weight: bold" />
+
 						<h:outputText value="Author:" />
-						<h:outputText value="#{photo.author}" />
+						<h:outputText value="#{photo.author}" style="font-weight: bold" />
 					</h:panelGrid>
-			</p:fieldset>
+				</p:outputPanel>
+			</h:panelGrid>
+			<hr />
 		</ui:repeat>
+
+		<p:dialog header="Image Show" widgetVar="photoDialog" modal="true"
+			showEffect="blind" hideEffect="explode" resizable="false">
+			<p:outputPanel id="photoDetail" style="text-align:center;">
+				<p:panelGrid columns="2" columnClasses="label,value">
+					<f:facet name="header">
+						<h:graphicImage value="/images/#{photoBean.photo.path}" />
+					</f:facet>
+
+					<h:outputText value="Id:" />
+					<h:outputText value="#{photoBean.photo.id}"
+						style="font-weight: bold" />
+
+					<h:outputText value="Name:" />
+					<h:outputText value="#{photoBean.photo.name}"
+						style="font-weight: bold" />
+
+					<h:outputText value="Author:" />
+					<h:outputText value="#{photoBean.photo.author}"
+						style="font-weight: bold" />
+				</p:panelGrid>
+				<h:form>
+					<h:outputText value="Comments: "
+						style="font-size:18px;font-weight:bold"></h:outputText>
+					<ui:repeat value="#{photo.comments}" var="comment">
+						<p:fieldset legend="#{comment.author}"
+							style="margin-bottom:20px;margin-left:35px">
+							<h:outputText value="#{comment.text}"
+								style="font-size:14px;font-weight:italic"></h:outputText>
+						</p:fieldset>
+					</ui:repeat>
+					<p:inputTextarea value="#{photoBean.comment.text}"
+						maxlength="21845" cols="150" counter="display"
+						counterTemplate="{0} characters remaining."
+						style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
+					<h:outputText id="display" />
+					<h:commandButton value="Save Comment"
+						actionListener="#{photoBean.saveComment}">
+					</h:commandButton>
+				</h:form>
+			</p:outputPanel>
+		</p:dialog>
+
+
+		<h:panelGrid columns="2">
+			<ui:repeat value="#{photoBean.photos}" var="photo">
+
+				<p:fieldset legend="#{photo.name}"
+					style="margin-bottom:20px;margin-right:5px">
+					<h:panelGrid columns="2">
+						<h:outputLink value="photoView.xhtml?id=#{photo.id}">
+							<h:graphicImage value="/images/#{photo.path}" width="250px" />
+						</h:outputLink>
+						<h:outputText value="" />
+
+						<h:panelGrid columns="2" cellpadding="1">
+							<h:outputText value="Name:" />
+							<h:outputText value="#{photo.name}" />
+							<h:outputText value="Author:" />
+							<h:outputText value="#{photo.author}" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</p:fieldset>
+			</ui:repeat>
+		</h:panelGrid>
 	</h:form>
 </ui:composition>
 

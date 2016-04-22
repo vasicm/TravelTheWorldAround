@@ -11,21 +11,43 @@
 
 <ui:composition>
 	<h:form>
+		<h:panelGrid columns="2" cellpadding="5">
+			<h:outputLabel for="search" value="Search: " />
+			<p:inputText id="search" value="#{travelogueBean.search}"
+				label="search">
+			</p:inputText>
+			<h:outputLabel value="Select one: " />
+			<h:selectOneMenu value="#{travelogueBean.category}" label="Text 2">
+				<f:selectItem itemLabel="All travelogues" itemValue="all"
+					noSelectionOption="true" />
+				<f:selectItem itemLabel="My travelogue" itemValue="my"
+					itemDisabled="false" />
+				<f:selectItem itemLabel="Unviewed travelogues" itemValue="unviewed"
+					itemDisabled="#{!userBean.administrator}" />
+				<f:selectItem itemLabel="Unapproved travelogue"
+					itemValue="unapproved" itemDisabled="#{!userBean.administrator}" />
+			</h:selectOneMenu>
+			<h:outputText value="" />
+			<p:commandButton process="@parent:@parent" update="@form"
+				value="Process" />
+		</h:panelGrid>
+
 		<ui:repeat value="#{travelogueBean.travelogues}" var="travelogue">
-			<p:fieldset legend="#{travelogue.locationInfo}" style="margin-bottom:20px">
-				<h:commandLink action="#{travelogueBean.viewTravelogue}">
-				<f:setPropertyActionListener value="#{travelogue}" target="#{travelogueBean.travelogue}"></f:setPropertyActionListener>
-				<h:outputText value="#{travelogue.name}" style="font-size:20px;font-weight:bold" ></h:outputText>
-				</h:commandLink> 
-				<br/>
+			<p:fieldset legend="#{travelogue.locationInfo}"
+				style="margin-bottom:20px">
+				<h:outputLink value="travelogueView.xhtml?id=#{travelogue.id}">
+					<h:outputText value="#{travelogue.name}"
+						style="font-size:20px;font-weight:bold"></h:outputText>
+				</h:outputLink>
+				<br />
 				<h:outputText></h:outputText>
 				<h:outputText value="#{travelogue.text}" escape="false" />
 				<h:panelGrid columns="2" cellpadding="1">
-						<h:outputText value="Date:" />
-						<h:outputText value="#{travelogue.date}" />
-						<h:outputText value="Author:" />
-						<h:outputText value="#{travelogue.author}" />
-					</h:panelGrid>
+					<h:outputText value="Date:" />
+					<h:outputText value="#{travelogue.date}" />
+					<h:outputText value="Author:" />
+					<h:outputText value="#{travelogue.author}" />
+				</h:panelGrid>
 			</p:fieldset>
 		</ui:repeat>
 	</h:form>

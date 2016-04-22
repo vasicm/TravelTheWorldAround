@@ -20,7 +20,13 @@ public class CommentDAO {
 	private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool();
 	
 	private static final String SQL_SELECT_ALL_COMMENT_TRAV = "select * from comment where travelogue_id = ?";
-	private static final String SQL_INSERT_TRAVELOGUE_COMMENT = "INSERT INTO `travel_the_world_around`.`comment` (`text`, `date`, `travelogue_id`, `user_username`) VALUES (?, ?, ?, ?)";
+	private static final String SQL_SELECT_ALL_COMMENT_PHOTO = "select * from comment where photo_id = ?";
+	private static final String SQL_INSERT_TRAVELOGUE_COMMENT = "INSERT INTO `travel_the_world_around`.`comment` "
+			+ "(`text`, `date`, `travelogue_id`, `user_username`) "
+			+ "VALUES (?, ?, ?, ?)";
+	private static final String SQL_INSERT_PHOTO_COMMENT = "INSERT INTO `travel_the_world_around`.`comment` "
+			+ "(`text`, `date`, `photo_id`, `user_username`) "
+			+ "VALUES (?, ?, ?, ?)";
 	
 	public static boolean insertForTravelogue(Comment comm, int travelogueId) {
 		boolean retVal = false;
@@ -31,6 +37,31 @@ public class CommentDAO {
 		try {
 			connection = connectionPool.checkOut();
 			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_INSERT_TRAVELOGUE_COMMENT, true,
+					values);
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows == 0)
+				retVal = false;
+			else
+				retVal = true;
+			pstmt.close();
+		} catch (SQLException e) {
+			retVal = false;
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return retVal;
+	}
+	
+	public static boolean insertForPhoto(Comment comm, int photoId) {
+		System.out.println("*******insertForPhoto");
+		boolean retVal = false;
+		Connection connection = null;
+		ResultSet generatedKeys = null;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Object values[] = {comm.getText(), df.format(comm.getDate()), photoId,  comm.getAuthor()};
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_INSERT_PHOTO_COMMENT, true,
 					values);
 			int affectedRows = pstmt.executeUpdate();
 			if (affectedRows == 0)
@@ -56,6 +87,35 @@ public class CommentDAO {
 			connection = connectionPool.checkOut();
 			PreparedStatement pstmt = DAOUtil.prepareStatement(connection,
 					SQL_SELECT_ALL_COMMENT_TRAV, false, values);
+			rs = pstmt.executeQuery();
+			while (rs.next()){
+				comm = new Comment(
+						rs.getInt("id"), 
+						rs.getString("text"), 
+						rs.getDate("date"), 
+						rs.getString("user_username")
+				);
+				comments.add(comm);
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return comments;
+	}
+	
+	public static List<Comment> allPhotoComment(int photoId) {
+		List<Comment> comments = new ArrayList<Comment>();
+		Connection connection = null;
+		ResultSet rs = null;
+		Comment comm = null;
+		Object values[] = {photoId};
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection,
+					SQL_SELECT_ALL_COMMENT_PHOTO, false, values);
 			rs = pstmt.executeQuery();
 			while (rs.next()){
 				comm = new Comment(

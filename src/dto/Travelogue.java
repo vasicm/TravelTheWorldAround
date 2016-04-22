@@ -103,6 +103,9 @@ public class Travelogue {
 	public float getRating() {
 		return rating;
 	}
+	public int getRatingInteger() {
+		return Math.round(rating);
+	}
 	public void setRating(float rating) {
 		this.rating = rating;
 	}

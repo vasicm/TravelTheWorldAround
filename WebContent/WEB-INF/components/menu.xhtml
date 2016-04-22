@@ -1,42 +1,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
 <ui:composition>
 	<h:form>
-		<div class="link">
-			<h:outputLink value="index.xhtml">
-				<h:outputText value="Home" />
-			</h:outputLink>
-		</div>
-		<div class="link">
-			<h:outputLink value="travelogues.xhtml">
-				<h:outputText value="Travelogues" />
-			</h:outputLink>
-		</div>
-		<div class="link">
-			<h:outputLink value="addTravelogues.xhtml">
-				<h:outputText value="Add Travelogues" />
-			</h:outputLink>
-		</div>
-		<div class="link">
-			<h:outputLink value="photos.xhtml">
-				<h:outputText value="Travel Photos" />
-			</h:outputLink>
-		</div>
-		<div class="link">
-			<h:outputLink value="addPhoto.xhtml">
-				<h:outputText value="Add Photo" />
-			</h:outputLink>
-		</div>
-		<div class="link">
-			<h:outputLink rendered="#{!userBean.loggedIn}" value="signUp.xhtml">
-				<h:outputText value="Sign up" />
-			</h:outputLink>
-			<h:commandLink rendered="#{userBean.loggedIn}"
-				action="#{userBean.logout}" value="Log out" />
-		</div>
-
+		<p:menu style="width:90%">
+			<p:submenu label="Navigations">
+				<p:menuitem value="Home" url="index.xhtml" icon="ui-icon-home" />
+				<p:menuitem value="Travelogues" outcome="travelogues.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Add Travelogues" outcome="addTravelogues.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Travel Photos" outcome="photos.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Add Photo" outcome="addPhoto.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Contact" outcome="contact.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Sign up" outcome="signUp.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Log out" rendered="#{userBean.loggedIn}"
+					actionListener="#{userBean.logout}" icon="ui-icon-star" />
+			</p:submenu>
+		</p:menu>
 	</h:form>
 </ui:composition>
 </html>

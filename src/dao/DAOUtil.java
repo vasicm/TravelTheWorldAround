@@ -1,9 +1,14 @@
 package dao;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import dto.Travelogue;
 
 public final class DAOUtil {
-
+	private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool();
+	
 	public static PreparedStatement prepareStatement(Connection connection,
 			String sql, boolean returnGeneratedKeys, Object... values)
 			throws SQLException {
@@ -19,5 +24,27 @@ public final class DAOUtil {
 		for (int i = 0; i < values.length; i++) {
 			preparedStatement.setObject(i + 1, values[i]);
 		}
+	}
+	
+	public static boolean executeUpdate(Object values[], String SQL) {
+		boolean retVal = false;
+		Connection connection = null;
+		ResultSet generatedKeys = null;
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL, true,
+					values);
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows == 0)
+				retVal = false;
+			else
+				retVal = true;
+			pstmt.close();
+		} catch (SQLException e) {
+			retVal = false;
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return retVal;
 	}
 }

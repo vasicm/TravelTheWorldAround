@@ -1,25 +1,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
-	  xmlns:f="http://java.sun.com/jsf/core"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html">
 <h:body>
-<ui:decorate template="/WEB-INF/templates/template.xhtml">
-<ui:define name="title">
-    <h:outputText value="TRAVEL THE WORLD AROUND" />
-</ui:define>
-  <ui:define name="menu">
-    <ui:include src="/WEB-INF/components/menu.xhtml"></ui:include>
-  </ui:define>
-	<ui:define name="contentTitle">
-	    <h:outputText value="Login" />
-	</ui:define>
-  <ui:define name="pageContent">
-      <ui:include src="/WEB-INF/components/bodyLogIn.xhtml"></ui:include>
-  </ui:define>
-<ui:define name="footer">
-      <ui:include src="/WEB-INF/components/footer.xhtml"></ui:include>
-  </ui:define>
-</ui:decorate>
+	<ui:decorate template="/WEB-INF/templates/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="TRAVEL THE WORLD AROUND" />
+		</ui:define>
+		<ui:define name="menu">
+			<ui:include src="/WEB-INF/components/menu.xhtml"></ui:include>
+		</ui:define>
+		<ui:define name="contentTitle">
+			<h:outputText value="Login" />
+		</ui:define>
+		<ui:define name="pageContent">
+			<ui:include src="/WEB-INF/components/bodyLogIn.xhtml"></ui:include>
+		</ui:define>
+		<ui:define name="additionally">
+			<ui:include src="/WEB-INF/components/additionally.xhtml"></ui:include>
+		</ui:define>
+		<ui:define name="footer">
+			<ui:include src="/WEB-INF/components/footer.xhtml"></ui:include>
+		</ui:define>
+	</ui:decorate>
 
 </h:body>
 </html>
