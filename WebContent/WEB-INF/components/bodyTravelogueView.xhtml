@@ -20,17 +20,23 @@
 			<br />
 			<h:outputText value="#{travelogueBean.travelogue.text}"
 				escape="false" />
-
+			<br />
+			<!-- TODO This travelogue was approved -->
 			<h:outputLink rendered="#{travelogueBean.travelogueEditable}"
 				value="addTravelogues.xhtml?id=#{travelogueBean.travelogue.id}">
 				<p:button value="Edit travelogue"></p:button>
 			</h:outputLink>
 
+			<h:outputLink rendered="#{travelogueBean.travelogueEditable}"
+				value="addPhoto.xhtml?id=#{travelogueBean.travelogue.id}">
+				<p:button value="Add photo"></p:button>
+			</h:outputLink>
+
 			<p:commandButton rendered="#{userBean.administrator}" value="Approve"
-				actionListener="#{travelogueBean.approve}" />
+				actionListener="#{travelogueBean.approve}" update="messages" />
 
 			<p:commandButton rendered="#{userBean.administrator}"
-				value="Unapprove" actionListener="#{travelogueBean.unapprove}" />
+				value="Unapprove" actionListener="#{travelogueBean.unapprove}" update="messages"/>
 
 			<h:panelGrid columns="2" cellpadding="1">
 				<h:outputText value="Date:" />
@@ -61,24 +67,61 @@
 				<p:fileDownload value="#{travelogueBean.traveloguePDF}" />
 			</p:commandButton>
 		</h:panelGrid>
+		<h:panelGrid columns="2">
+			<ui:repeat value="#{photoBean.photos}" var="photo">
+
+				<p:fieldset legend="#{photo.name}"
+					style="margin-bottom:20px;margin-right:5px"
+					rendered="#{travelogueBean.travelogueEditable || photo.state == 1 || userBean.administrator}">
+					<h:panelGrid layout="block">
+						<h:outputLink value="photoView.xhtml?id=#{photo.id}">
+							<h:graphicImage value="/images/#{photo.path}" width="250px" />
+						</h:outputLink>
+
+						<h:panelGrid columns="2" cellpadding="1">
+							<h:outputText value="Name:" />
+							<h:outputText value="#{photo.name}" />
+							<h:outputText value="Author:" />
+							<h:outputText value="#{photo.author}" />
+						</h:panelGrid>
+
+						<h:panelGroup layout="block"
+							rendered="#{travelogueBean.travelogueEditable || userBean.administrator}">
+							<h:outputText value="This photo wasn't approved"
+								rendered="#{photo.state != 1}"
+								style="color:red;font-style:italic;"></h:outputText>
+							<h:outputText value="This photo was approved"
+								rendered="#{photo.state == 1}"
+								style="color:green;font-style:italic;"></h:outputText>
+						</h:panelGroup>
+					</h:panelGrid>
+				</p:fieldset>
+			</ui:repeat>
+		</h:panelGrid>
 		<br />
 
-		<h:outputText value="Comments: "
-			style="font-size:18px;font-weight:bold"></h:outputText>
-		<ui:repeat value="#{travelogueBean.travelogue.comments}" var="comment">
-			<p:fieldset legend="#{comment.author}"
-				style="margin-bottom:20px;margin-left:35px">
-				<h:outputText value="#{comment.text}"
-					style="font-size:14px;font-weight:italic"></h:outputText>
-			</p:fieldset>
-		</ui:repeat>
-		<p:inputTextarea value="#{travelogueBean.comment.text}"
-			maxlength="21845" cols="150" counter="display"
-			counterTemplate="{0} characters remaining."
-			style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
-		<h:outputText id="display" />
-		<h:commandButton value="Save Comment"
-			action="#{travelogueBean.saveComment}"></h:commandButton>
+
+		<h:form>
+			<h:outputText value="Comments: "
+				style="font-size:18px;font-weight:bold"></h:outputText>
+			<ui:repeat value="#{travelogueBean.travelogue.comments}"
+				var="comment">
+				<p:fieldset legend="#{comment.author}"
+					style="margin-bottom:20px;margin-left:35px">
+					<h:outputText value="#{comment.text}"
+						style="font-size:14px;font-weight:italic"></h:outputText>
+				</p:fieldset>
+			</ui:repeat>
+
+			<p:inputTextarea value="#{travelogueBean.comment.text}" id="textArea"
+				maxlength="21845" cols="150" counter="display"
+				counterTemplate="{0} characters remaining."
+				style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
+			<h:outputText id="display" />
+			<h:commandButton value="Save Comment"
+				actionListener="#{travelogueBean.saveComment}">
+			</h:commandButton>
+		</h:form>
 	</h:form>
 </ui:composition>
 

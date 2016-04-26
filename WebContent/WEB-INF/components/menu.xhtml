@@ -13,13 +13,17 @@
 					icon="ui-icon-star" />
 				<p:menuitem value="Add Travelogues" outcome="addTravelogues.xhtml"
 					icon="ui-icon-star" />
-				<p:menuitem value="Travel Photos" outcome="photos.xhtml"
-					icon="ui-icon-star" />
-				<p:menuitem value="Add Photo" outcome="addPhoto.xhtml"
+				<p:menuitem value="Messages (#{userBean.messagesCount})"
+					outcome="messages.xhtml"
+					style="background-color:#{userBean.messagesCount == '0' ? '' : 'green'};;"
 					icon="ui-icon-star" />
 				<p:menuitem value="Contact" outcome="contact.xhtml"
 					icon="ui-icon-star" />
+				<p:menuitem value="Cheap Flights" outcome="flights.xhtml"
+					icon="ui-icon-star" />
 				<p:menuitem value="Sign up" outcome="signUp.xhtml"
+					icon="ui-icon-star" />
+				<p:menuitem value="Report" outcome="report.xhtml"
 					icon="ui-icon-star" />
 				<p:menuitem value="Log out" rendered="#{userBean.loggedIn}"
 					actionListener="#{userBean.logout}" icon="ui-icon-star" />

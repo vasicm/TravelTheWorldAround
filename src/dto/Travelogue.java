@@ -13,27 +13,17 @@ public class Travelogue {
 	private String author;
 	private int state;
 	private float rating;
-	private int votes;
 	private int shares;
+	private List<Photo> photos;
 	private List<Comment> comments;
 	public Travelogue() {
 		super();
 		this.id = -1;
 	}
-	public Travelogue(int id, String name, Date date, String locationInfo, String text, String author,
-			List<Comment> comments) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.date = date;
-		this.locationInfo = locationInfo;
-		this.text = text;
-		this.author = author;
-		this.comments = comments;
-	}
+	
 
 	public Travelogue(int id, String name, Date date, String locationInfo, String text, String author, int state,
-			float rating, int votes, int shares, List<Comment> comments) {
+			float rating, int shares, List<Photo> photos, List<Comment> comments) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -43,10 +33,11 @@ public class Travelogue {
 		this.author = author;
 		this.state = state;
 		this.rating = rating;
-		this.votes = votes;
 		this.shares = shares;
+		this.photos = photos;
 		this.comments = comments;
 	}
+
 	public int getId() {
 		return id;
 	}
@@ -108,12 +99,6 @@ public class Travelogue {
 	}
 	public void setRating(float rating) {
 		this.rating = rating;
-	}
-	public int getVotes() {
-		return votes;
-	}
-	public void setVotes(int votes) {
-		this.votes = votes;
 	}
 	public int getShares() {
 		return shares;

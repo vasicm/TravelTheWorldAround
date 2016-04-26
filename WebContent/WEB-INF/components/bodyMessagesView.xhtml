@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<h:form>
+		<h:outputText value="My contact:"
+			style="font-size:30px;font-weight:bold"></h:outputText>
+
+		<ui:repeat value="#{userBean.allMessage}" var="message">
+			<p:fieldset legend="#{message.from}"
+				style="margin-bottom:20px;margin-left:0px">
+				<h:outputText value="#{message.text}"></h:outputText>
+				<br />
+
+				<h:outputText rendered="#{message.seen}"
+					style="font-style:italic;font-size:10px" value="seen"></h:outputText>
+				<br />
+
+				<h:outputText style="font-style:italic;font-size:10px"
+					value="#{message.sendDate}"></h:outputText>
+
+			</p:fieldset>
+		</ui:repeat>
+		<br/>
+		<p:inputTextarea value="#{userBean.messageText}"
+			maxlength="4096" cols="150" counter="display"
+			counterTemplate="{0} characters remaining."
+			style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
+		<h:outputText id="display" />
+		<br/>
+		<h:commandButton value="Send Message"
+			action="#{userBean.sendMessage}"></h:commandButton>
+	</h:form>
+</ui:composition>
+</html>

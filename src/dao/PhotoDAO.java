@@ -16,16 +16,28 @@ import dto.Travelogue;
 public class PhotoDAO {
 private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool();
 	
-	private static final String SQL_INSERT = "INSERT INTO `travel_the_world_around`.`photo` (`name`, `path`, `user_username`, `gallery_id`) VALUES (?, ?, ?, ?);";
-	private static final String SQL_SELECT_ALL = "SELECT * FROM photo";
+	private static final String SQL_INSERT = "INSERT INTO `travel_the_world_around`.`photo` (`name`, `path`, `user_username`, `travelogue_id`) VALUES (?, ?, ?, ?);";
+	private static final String SQL_SELECT_ALL = "SELECT * FROM photo where photo.travelogue_id = ?";
 	private static final String SQL_SELECT_PHOTO = "SELECT * FROM photo where photo.id = ?";
 	
-	public static boolean insert(Photo photo) {
+	private static final String SQL_APPROVE = "UPDATE `travel_the_world_around`.`photo` SET `state`='1' WHERE `id`= ?";
+	private static final String SQL_UNAPPROVE = "UPDATE `travel_the_world_around`.`photo` SET `state`='-1' WHERE `id`= ?";
+	
+	public static boolean approve(int photoId) {
+		Object values[] = {photoId};
+		return DAOUtil.executeUpdate(values, SQL_APPROVE);
+	}
+	public static boolean unapprove(int photoId) {
+		Object values[] = {photoId};
+		return DAOUtil.executeUpdate(values, SQL_UNAPPROVE);
+	}
+	
+	public static boolean insert(Photo photo, int travelogueId) {
 		boolean retVal = false;
 		Connection connection = null;
 		ResultSet generatedKeys = null;
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		Object values[] = {photo.getName(), photo.getPath(), photo.getAuthor(), 1};
+		Object values[] = {photo.getName(), photo.getPath(), photo.getAuthor(), travelogueId};
 		try {
 			connection = connectionPool.checkOut();
 			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_INSERT, true,
@@ -60,6 +72,8 @@ private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool(
 						rs.getString("name"),
 						rs.getString("path"),
 						rs.getString("user_username"),
+						rs.getInt("state"),
+						RatingDAO.averageRatingForPhoto(id),
 						CommentDAO.allPhotoComment(id)
 				);
 			}
@@ -72,12 +86,12 @@ private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool(
 		return photo;
 	}
 	
-	public static List<Photo> allPhotos() {
+	public static List<Photo> allPhotos(int travelogueId) {
 		List<Photo> photos = new ArrayList<Photo>();
 		Connection connection = null;
 		ResultSet rs = null;
 		Photo photo = null;
-		Object values[] = {};
+		Object values[] = {travelogueId};
 		try {
 			connection = connectionPool.checkOut();
 			PreparedStatement pstmt = DAOUtil.prepareStatement(connection,
@@ -90,6 +104,8 @@ private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool(
 						rs.getString("name"),
 						rs.getString("path"),
 						rs.getString("user_username"),
+						rs.getInt("state"),
+						RatingDAO.averageRatingForPhoto(id),
 						CommentDAO.allPhotoComment(id)
 				);
 				photos.add(photo);

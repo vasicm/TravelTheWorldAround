@@ -13,35 +13,31 @@
 	<h:form>
 		<h:outputText value="My contact:"
 			style="font-size:30px;font-weight:bold"></h:outputText>
+		<ui:repeat value="#{userBean.allUsersInContact}" var="user">
+			<p:fieldset legend="#{user.username}" style="margin-bottom:20px">
+				<h:outputText></h:outputText>
+				<h:panelGrid columns="2" cellpadding="1">
+					<h:outputText value="Name:" />
+					<h:outputText value="#{user.name}" />
+					<h:outputText value="Surname:" />
+					<h:outputText value="#{user.surname}" />
+					<h:outputText value="Biography" />
+					<h:outputText value="#{user.bio}" />
+					<h:outputText value="e mail" />
+					<h:outputText value="#{user.eMail}" />
+					<h:outputText value="Birthday date" />
+					<h:outputText value="#{user.brDate}" />
+					<h:outputText />
+					<h:commandLink action="#{userBean.messages}">
+						<f:setPropertyActionListener value="#{user}"
+							target="#{userBean.selectedUser}"></f:setPropertyActionListener>
+						<p:button value="Message"></p:button>
+					</h:commandLink>
+				</h:panelGrid>
 
-		<ui:repeat value="#{userBean.allMessage}" var="message">
-			<p:fieldset legend="#{message.from}"
-				style="margin-bottom:20px;margin-left:0px">
-				<h:outputText value="#{message.text}"></h:outputText>
-				<br />
-
-				<h:outputText rendered="#{message.seen}"
-					style="font-style:italic;font-size:10px" value="seen"></h:outputText>
-				<br />
-
-				<h:outputText style="font-style:italic;font-size:10px"
-					value="#{message.sendDate}"></h:outputText>
-
-				<c:if test="#{message.from eq userBean.selectedUser.username}">
-					<h:outputText style="font-style:italic;font-size:10px"
-						value="buhaha"></h:outputText>
-				</c:if>
 			</p:fieldset>
 		</ui:repeat>
-		<br/>
-		<p:inputTextarea value="#{userBean.messageText}"
-			maxlength="4096" cols="150" counter="display"
-			counterTemplate="{0} characters remaining."
-			style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
-		<h:outputText id="display" />
-		<br/>
-		<h:commandButton value="Send Message"
-			action="#{userBean.sendMessage}"></h:commandButton>
 	</h:form>
 </ui:composition>
+
 </html>

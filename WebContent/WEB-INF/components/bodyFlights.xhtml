@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:of="http://omnifaces.org/functions"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<h:form>
+		<h:panelGrid columns="2" cellpadding="5">
+			<h:outputLabel for="search" value="Departing: " />
+			<p:calendar value="#{flightsBean.departing}" ></p:calendar>
+			<h:outputLabel value="Returning: " />
+			<p:calendar value="#{flightsBean.returning}" ></p:calendar>
+			<h:outputText value="" />
+			<p:commandButton process="@parent:@parent" update="@form"
+				value="Process" />
+		</h:panelGrid>
+
+		<ui:repeat value="#{flightsBean.flights}" var="flight">
+			<p:fieldset
+				style="margin-bottom:20px">
+				<h:outputText></h:outputText>
+				<h:panelGrid columns="2" cellpadding="1">
+					<h:outputText value="From:" />
+					<h:outputText value="#{flight.from}" />
+					<h:outputText value="To:" />
+					<h:outputText value="#{flight.to}" />
+					<h:outputText value="Price:" />
+					<h:outputText value="#{flight.price}" />
+				</h:panelGrid>
+			</p:fieldset>
+		</ui:repeat>
+	</h:form>
+</ui:composition>
+
+</html>

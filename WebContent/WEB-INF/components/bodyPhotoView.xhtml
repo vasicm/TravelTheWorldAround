@@ -13,42 +13,65 @@
 
 		<p:growl id="messages" showDetail="true" />
 
-			<p:panelGrid columns="2" columnClasses="label,value">
-				<f:facet name="header">
-					<h:graphicImage value="/images/#{photoBean.photo.path}" />
-				</f:facet>
+		<p:panelGrid columns="2" columnClasses="label,value">
+			<f:facet name="header">
+				<h:graphicImage value="/images/#{photoBean.photo.path}"
+					width="1000px" />
+			</f:facet>
 
-				<h:outputText value="Id:" />
-				<h:outputText value="#{photoBean.photo.id}"
-					style="font-weight: bold" />
+			<h:outputText value="Id:" />
+			<h:outputText value="#{photoBean.photo.id}" style="font-weight: bold" />
 
-				<h:outputText value="Name:" />
-				<h:outputText value="#{photoBean.photo.name}"
-					style="font-weight: bold" />
+			<h:outputText value="Name:" />
+			<h:outputText value="#{photoBean.photo.name}"
+				style="font-weight: bold" />
 
-				<h:outputText value="Author:" />
-				<h:outputText value="#{photoBean.photo.author}"
-					style="font-weight: bold" />
-			</p:panelGrid>
-			<h:form>
-				<h:outputText value="Comments: "
-					style="font-size:18px;font-weight:bold"></h:outputText>
-				<ui:repeat value="#{photoBean.photo.comments}" var="comment">
-					<p:fieldset legend="#{comment.author}"
-						style="margin-bottom:20px;margin-left:35px">
-						<h:outputText value="#{comment.text}"
-							style="font-size:14px;font-weight:italic"></h:outputText>
-					</p:fieldset>
-				</ui:repeat>
-				<p:inputTextarea value="#{photoBean.comment.text}" maxlength="21845"
-					cols="150" counter="display"
-					counterTemplate="{0} characters remaining."
-					style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
-				<h:outputText id="display" />
-				<h:commandButton value="Save Comment"
-					actionListener="#{photoBean.saveComment}">
-				</h:commandButton>
-			</h:form>
+			<h:outputText value="Author:" />
+			<h:outputText value="#{photoBean.photo.author}"
+				style="font-weight: bold" />
+
+			<h:outputText value="Rating:" />
+			<p:rating value="#{photoBean.photo.ratingInteger}" readonly="true"
+				stars="10" />
+
+			<h:outputText value="Rate:" />
+			<p:rating value="#{photoBean.rating}" stars="10">
+				<p:ajax event="rate" listener="#{photoBean.onrate}"
+					update="messages" />
+				<p:ajax event="cancel" listener="#{photoBean.oncancel}"
+					update="messages" />
+			</p:rating>
+		</p:panelGrid>
+
+		<h:panelGroup layout="block" rendered="#{userBean.administrator}">
+			<p:commandButton value="Approve"
+				actionListener="#{photoBean.approve}" update="messages" />
+
+			<p:commandButton value="Unapprove"
+				actionListener="#{photoBean.unapprove}" update="messages" />
+		</h:panelGroup>
+
+
+		<h:form>
+			<h:outputText value="Comments: "
+				style="font-size:18px;font-weight:bold"></h:outputText>
+			<ui:repeat value="#{photoBean.photo.comments}" var="comment">
+				<p:fieldset legend="#{comment.author}"
+					style="margin-bottom:20px;margin-left:35px">
+					<h:outputText value="#{comment.text}"
+						style="font-size:14px;font-weight:italic"></h:outputText>
+				</p:fieldset>
+			</ui:repeat>
+
+			<p:inputTextarea value="#{photoBean.comment.text}" maxlength="21845"
+				cols="150" counter="display"
+				counterTemplate="{0} characters remaining."
+				style="font-size:14px;font-weight:italic;margin-bottom:20px;margin-left:35px"></p:inputTextarea>
+			<h:outputText id="display" />
+			<h:commandButton value="Save Comment"
+				actionListener="#{photoBean.saveComment}">
+			</h:commandButton>
+		</h:form>
 	</h:form>
 </ui:composition>
 

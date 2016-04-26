@@ -7,18 +7,37 @@ public class Photo {
 	private String name;
 	private String path;
 	private String author;
+	private int state;
+	private float rating;
 	private List<Comment> comments;
 	public Photo() {
 		super();
 		id = -1;
 	}
-	public Photo(int id, String name, String path, String author, List<Comment> comments) {
+	public Photo(int id, String name, String path, String author, int state, float rating, List<Comment> comments) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.path = path;
 		this.author = author;
+		this.state = state;
+		this.rating = rating;
 		this.comments = comments;
+	}
+	public float getRating() {
+		return rating;
+	}
+	public void setRating(float rating) {
+		this.rating = rating;
+	}
+	public int getRatingInteger() {
+		return Math.round(rating);
+	}
+	public int getState() {
+		return state;
+	}
+	public void setState(int state) {
+		this.state = state;
 	}
 	public int getId() {
 		return id;

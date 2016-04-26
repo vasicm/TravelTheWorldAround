@@ -2,7 +2,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html">
-<f:event type="preRenderView" listener="#{userBean.checkLoggedIn}" />
+<f:event type="preRenderView" listener="#{userBean.checkLoggedInAsRegisteredUser}" />
+<f:event type="preRenderView" listener="#{userBean.checkMessage}" />
 <h:body>
 	<ui:decorate template="/WEB-INF/templates/template.xhtml">
 		<ui:define name="title">

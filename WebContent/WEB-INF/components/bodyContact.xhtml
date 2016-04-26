@@ -11,6 +11,39 @@
 
 <ui:composition>
 	<h:form>
+		<h:panelGroup layout="block" rendered="#{userBean.administrator}">
+			<h:outputText value="All unviewed user:"
+				style="font-size:30px;font-weight:bold"></h:outputText>
+			<ui:repeat value="#{userBean.allUnviewedUsers}" var="user">
+				<p:fieldset legend="#{user.username}" style="margin-bottom:20px">
+					<h:outputText></h:outputText>
+					<h:panelGrid columns="2" cellpadding="1">
+						<h:outputText value="Name:" />
+						<h:outputText value="#{user.name}" />
+						<h:outputText value="Surname:" />
+						<h:outputText value="#{user.surname}" />
+						<h:outputText value="Biography" />
+						<h:outputText value="#{user.bio}" />
+						<h:outputText value="e mail" />
+						<h:outputText value="#{user.eMail}" />
+						<h:outputText value="Birthday date" />
+						<h:outputText value="#{user.brDate}" />
+						<h:commandLink action="#{userBean.unapprove}">
+							<f:setPropertyActionListener value="#{user}"
+								target="#{userBean.selectedUser}"></f:setPropertyActionListener>
+							<p:button value="unapprove"></p:button>
+						</h:commandLink>
+						<h:commandLink action="#{userBean.approve}">
+							<f:setPropertyActionListener value="#{user}"
+								target="#{userBean.selectedUser}"></f:setPropertyActionListener>
+							<p:button value="Approve"></p:button>
+						</h:commandLink>
+					</h:panelGrid>
+
+				</p:fieldset>
+			</ui:repeat>
+
+		</h:panelGroup>
 		<h:outputText value="My contact:"
 			style="font-size:30px;font-weight:bold"></h:outputText>
 		<ui:repeat value="#{userBean.allUsersInContact}" var="user">
@@ -42,8 +75,7 @@
 
 		<h:panelGrid columns="3" cellpadding="5">
 			<h:outputLabel for="search" value="Search: *" />
-			<p:inputText id="search" value="#{userBean.search}"
-				label="search">
+			<p:inputText id="search" value="#{userBean.search}" label="search">
 			</p:inputText>
 		</h:panelGrid>
 		<ui:repeat value="#{userBean.allUsersNotInContact}" var="user">

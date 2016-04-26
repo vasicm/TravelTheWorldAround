@@ -19,22 +19,39 @@ public class UserDAO {
 	private static ConnectionPool connectionPool = ConnectionPool.getConnectionPool();
 
 	private static final String SQL_SELECT_BY_USERNAME_AND_PASSWORD = "SELECT * FROM user "
-			+ "WHERE username=? AND password=?";
+			+ "WHERE state = 1 AND username=? AND password=?";
+	private static final String SQL_SELECT_BY_USERNAME = "SELECT * FROM user " + "WHERE state = 1 and username=?";
 
-	private static final String SQL_INSERT = "INSERT INTO user "
-			+ "(username, password, name, surname, e_mail, bio, br_date, group) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_INSERT = "INSERT INTO `travel_the_world_around`.`user` (`username`, `password`, `name`, `surname`, `e_mail`, `bio`, `br_date`, `group`) "
+			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
 	private static final String SQL_ALL_USERS_IN_CONTACT = "select user.* from user, contact "
-			+ "where user.username = contact.user_username2 and contact.user_username1 = ?";
+			+ "where user.state = 1 and user.username = contact.user_username2 and contact.user_username1 = ?";
 
 	private static final String SQL_ALL_USERS_NOT_IN_CONTACT = "select * from user "
-			+ "where user.username != ? and user.username like ? and user.username "
+			+ "where user.state = 1 and user.username != ? and user.username like ? and user.username "
 			+ "not in (select user.username from user, " + "contact where user.username = contact.user_username2 "
 			+ "and contact.user_username1 = ? " + ")";
 
 	private static final String SQL_INSERT_CONTACT = "INSERT INTO `travel_the_world_around`.`contact` "
 			+ "(`user_username1`, `user_username2`) " + "VALUES (?, ?)";
-
+	
+	private static final String SQL_ALL_UNVIEWED_USER = "SELECT * FROM user "
+			+ "WHERE state = 0";
+	private static final String SQL_ALL_UNAPPROVED_USER = "SELECT * FROM user "
+			+ "WHERE state = -1";
+	
+	private static final String SQL_APPROVE = "UPDATE `travel_the_world_around`.`user` SET `state`='1' WHERE `username`= ?";
+	private static final String SQL_UNAPPROVE = "UPDATE `travel_the_world_around`.`user` SET `state`='-1' WHERE `username`= ?";
+	
+	public static boolean approve(String username) {
+		Object values[] = {username};
+		return DAOUtil.executeUpdate(values, SQL_APPROVE);
+	}
+	public static boolean unapprove(String username) {
+		Object values[] = {username};
+		return DAOUtil.executeUpdate(values, SQL_UNAPPROVE);
+	}
 	private static String getGroup(int group) {
 		String str = new String("reg");
 		if (group == 2) {
@@ -80,7 +97,8 @@ public class UserDAO {
 		ResultSet generatedKeys = null;
 		DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		Object values[] = { user.getUsername(), user.getPassword(), user.getName(), user.getSurname(), user.geteMail(),
-				user.getBio(), df.format(user.getBrDate()), (user.getGroup().equals("admin") ? "2" : "1") };
+				user.getBio(), df.format(user.getBrDate()), (user.getGroup().equals("admin") ? 2 : 1) };
+		System.out.println(values.toString());
 		try {
 			connection = connectionPool.checkOut();
 			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_INSERT, true, values);
@@ -96,6 +114,29 @@ public class UserDAO {
 			connectionPool.checkIn(connection);
 		}
 		return retVal;
+	}
+
+	public static User selectByUsername(String username) {
+		User user = null;
+		Connection connection = null;
+		ResultSet rs = null;
+		Object values[] = { username };
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_SELECT_BY_USERNAME, false, values);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				user = new User(rs.getString("username"), "", rs.getString("name"), rs.getString("surname"),
+						rs.getString("e_mail"), rs.getString("bio"), rs.getDate("br_date"),
+						getGroup(rs.getInt("group")));
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return user;
 	}
 
 	public static User selectByUsernameAndPassword(String username, String password) {
@@ -154,10 +195,61 @@ public class UserDAO {
 		Connection connection = null;
 		ResultSet rs = null;
 		User user = null;
-		Object values[] = { username, "%"+search+"%", username };
+		Object values[] = { username, "%" + search + "%", username };
 		try {
 			connection = connectionPool.checkOut();
 			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_ALL_USERS_NOT_IN_CONTACT, false, values);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				user = new User(rs.getString("username"), "", rs.getString("name"), rs.getString("surname"),
+						rs.getString("e_mail"), rs.getString("bio"), rs.getDate("br_date"),
+						getGroup(rs.getInt("group")));
+				users.add(user);
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return users;
+	}
+	
+	public static List<User> allUnapprovedUsers() {
+		System.out.println("allUnapprovedUsers");
+		List<User> users = new ArrayList<User>();
+		Connection connection = null;
+		ResultSet rs = null;
+		User user = null;
+		Object values[] = { };
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_ALL_UNAPPROVED_USER, false, values);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				user = new User(rs.getString("username"), "", rs.getString("name"), rs.getString("surname"),
+						rs.getString("e_mail"), rs.getString("bio"), rs.getDate("br_date"),
+						getGroup(rs.getInt("group")));
+				users.add(user);
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return users;
+	}
+	public static List<User> allUnvieweddUsers() {
+		System.out.println("allUnapprovedUsers");
+		List<User> users = new ArrayList<User>();
+		Connection connection = null;
+		ResultSet rs = null;
+		User user = null;
+		Object values[] = { };
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection, SQL_ALL_UNVIEWED_USER, false, values);
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				user = new User(rs.getString("username"), "", rs.getString("name"), rs.getString("surname"),

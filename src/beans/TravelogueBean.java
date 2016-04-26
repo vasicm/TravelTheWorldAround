@@ -1,10 +1,16 @@
 package beans;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.sun.mail.handlers.message_rfc822;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.charset.Charset;
@@ -16,6 +22,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ComponentSystemEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,17 +31,15 @@ import org.primefaces.event.RateEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
-
 import dao.CommentDAO;
 import dao.MessageDAO;
+import dao.RatingDAO;
 import dao.TravelogueDAO;
+import dao.UserDAO;
 import dto.Comment;
 import dto.Message;
 import dto.Travelogue;
+import util.SendEmail;
 
 public class TravelogueBean {
 	private Travelogue travelogue = new Travelogue();
@@ -83,18 +88,24 @@ public class TravelogueBean {
 	}
 
 	public Travelogue getTravelogue() {
+		System.out.println("getTravelogue");
+		rating = RatingDAO.ratingForTravelogue(travelogue.getId(), userBean.getUser().getUsername());
 		return travelogue;
 	}
 
 	public void setTravelogue(Travelogue travelogue) {
+		System.out.println("setTravelogue");
+		rating = RatingDAO.ratingForTravelogue(travelogue.getId(), userBean.getUser().getUsername());
 		this.travelogue = travelogue;
 	}
 
 	public Comment getComment() {
+		System.out.println("getComment");
 		return comment;
 	}
 
 	public void setComment(Comment comment) {
+		System.out.println("setComment");
 		this.comment = comment;
 	}
 
@@ -104,7 +115,7 @@ public class TravelogueBean {
 
 	public String viewTravelogue() {
 		System.out.println("*** viewTravelogue " + travelogue.getId() + " name =" + travelogue.getName());
-		return "travelogueView.xhtml?id=8";
+		return "travelogueView.xhtml?id="+travelogue.getId();
 	}
 
 	public String editTravelogue() {
@@ -125,30 +136,39 @@ public class TravelogueBean {
 			e.printStackTrace();
 		}
 	}
+	
+	public void addMessage(String summary, String detail) {
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
 	public void approve() {
 		TravelogueDAO.approve(travelogue.getId());
-		// TODO: send mail to user
+		String eMail = UserDAO.selectByUsername(travelogue.getAuthor()).geteMail();
+		System.out.println("eMail = "+ eMail);
+		SendEmail.send(eMail, "Notification", "Travelogue '" + travelogue.getName() + "' was approved!");
 		MessageDAO.insert(new Message(-1, new Date(), "Travelogue '" + travelogue.getName() + "' was approved!", false,
 				userBean.getUser().getUsername(), travelogue.getAuthor()));
-//		redirectToTravelogueView();
-		// return viewTravelogue();
+		addMessage("Notification", "Travelogue '" + travelogue.getName() + "' was approved!");
 	}
 
 	public void unapprove() {
 		TravelogueDAO.unapprove(travelogue.getId());
-		// TODO: send mail to user
+		String eMail = UserDAO.selectByUsername(travelogue.getAuthor()).geteMail();
+		System.out.println("eMail = "+ eMail);
+		SendEmail.send(eMail, "Notification", "Travelogue '" + travelogue.getName() + "' wasn't approved!");
 		MessageDAO.insert(new Message(-1, new Date(), "Travelogue '" + travelogue.getName() + "' wasn't approved!",
 				false, userBean.getUser().getUsername(), travelogue.getAuthor()));
-//		redirectToTravelogueView();
-		// return viewTravelogue();
+		addMessage("Notification", "Travelogue '" + travelogue.getName() + "' wasn't approved!");
 	}
 
-	public String saveComment() {
+	public void saveComment() {
+		System.out.println("*** saveComment text = "+comment.getText());
 		comment.setAuthor(userBean.getUser().getUsername());
 		comment.setDate(new Date());
 		CommentDAO.insertForTravelogue(comment, travelogue.getId());
 		comment = new Comment();
-		return viewTravelogue();
+//		return viewTravelogue();
 	}
 
 	public void saveTravelogue() {
@@ -156,46 +176,49 @@ public class TravelogueBean {
 			travelogue.setAuthor(userBean.getUser().getUsername());
 			if (TravelogueDAO.getTravelogue(travelogue.getId()) == null) {
 				if (TravelogueDAO.insert(travelogue)) {
-					FacesMessage message = new FacesMessage("Succesful ", travelogue.getName() + " is uploaded.");
-					FacesContext.getCurrentInstance().addMessage(null, message);
+					addMessage( "Succesful ", travelogue.getName() + " is uploaded.");
+//					FacesMessage message = new FacesMessage("Succesful ", travelogue.getName() + " is uploaded.");
+//					FacesContext.getCurrentInstance().addMessage(null, message);
 					System.out.println("new Travelogue");
 					travelogue = new Travelogue();
 				}
 			} else {
 				if (TravelogueDAO.update(travelogue)) {
-					FacesMessage message = new FacesMessage("Succesful ", travelogue.getName() + " is uploaded.");
-					FacesContext.getCurrentInstance().addMessage(null, message);
+					addMessage( "Succesful ", travelogue.getName() + " is uploaded.");
+//					FacesMessage message = new FacesMessage("Succesful ", travelogue.getName() + " is uploaded.");
+//					FacesContext.getCurrentInstance().addMessage(null, message);
 					System.out.println("new Travelogue");
 					travelogue = new Travelogue();
 				}
 			}
 
 		} else {
-			FacesMessage message = new FacesMessage("sdfdsfdsfdsfsdf.");
-			FacesContext.getCurrentInstance().addMessage(null, message);
+			addMessage( "Error ", travelogue.getName() + " isn't uploaded.");
 		}
 	}
 
 	public void onrate(RateEvent rateEvent) {
-		TravelogueDAO.rate(travelogue.getId(), rating);
 		System.out.println("onrate " + rating);
-		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Rate Event",
-				"You rated:" + ((Integer) rateEvent.getRating()).intValue());
+
+		RatingDAO.insertRatingForTravelogue(travelogue.getId(), userBean.getUser().getUsername(), rating);
+		RatingDAO.updateRatingForTravelogue(travelogue.getId(), userBean.getUser().getUsername(), rating);
 		
+		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Rate Event",
+					"You rated:" + ((Integer) rateEvent.getRating()).intValue());			
+
 		FacesContext.getCurrentInstance().addMessage(null, message);
-//		redirectToTravelogueView();
+		// redirectToTravelogueView();
 	}
 
 	public void oncancel() {
 		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cancel Event", "Rate Reset");
 		FacesContext.getCurrentInstance().addMessage(null, message);
-//		redirectToTravelogueView();
+		// redirectToTravelogueView();
 	}
 
 	public Integer getRating() {
 		return rating;
 	}
-
 	public void setRating(Integer rating) {
 		this.rating = rating;
 	}
@@ -224,6 +247,8 @@ public class TravelogueBean {
 			ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 			externalContext
 					.redirect(externalContext.getRequestContextPath() + "/faces/errorPage.xhtml?message=" + message);
+		} else {
+			travelogue = TravelogueDAO.getTravelogue(travelogue.getId());
 		}
 	}
 
@@ -246,56 +271,48 @@ public class TravelogueBean {
 	}
 
 	public String getFacebookShare() {
-		return "<div>" 
-				+ "<div id=\"fb-root\"></div>" 
-				+ "<script>" 
-				+ "(function(d, s, id) {"
-				+ "var js, fjs = d.getElementsByTagName(s)[0];" 
-				+ "if (d.getElementById(id))" 
-				+ "return;"
-				+ "js = d.createElement(s);" 
-				+ "js.id = id;"
+		return "<div>" + "<div id=\"fb-root\"></div>" + "<script>" + "(function(d, s, id) {"
+				+ "var js, fjs = d.getElementsByTagName(s)[0];" + "if (d.getElementById(id))" + "return;"
+				+ "js = d.createElement(s);" + "js.id = id;"
 				+ "js.src = \"//connect.facebook.net/sr_RS/sdk.js#xfbml=1&version=v2.6\";"
-				+ "fjs.parentNode.insertBefore(js, fjs);" 
-				+ "}(document, 'script', 'facebook-jssdk'));" 
-				+ "</script>"
-				+ "<div class=\"fb-share-button\"" 
-				+ "data-href=\"http://localhost:8080/TravelTheWorldAround/faces/travelogueView.xhtml?id="+travelogue.getId()+"\""
-				+ "data-layout=\"button_count\" data-mobile-iframe=\"true\"></div>" 
+				+ "fjs.parentNode.insertBefore(js, fjs);" + "}(document, 'script', 'facebook-jssdk'));" + "</script>"
+				+ "<div class=\"fb-share-button\""
+				+ "data-href=\"http://localhost:8080/TravelTheWorldAround/faces/travelogueView.xhtml?id="
+				+ travelogue.getId() + "\"" + "data-layout=\"button_count\" data-mobile-iframe=\"true\"></div>"
 				+ "</div>";
 	}
-	
-	public StreamedContent getTraveloguePDF() throws DocumentException, IOException{
-		 // step 1
-//        Document document = new Document();
-//        System.out.println( "step 1!" );
-        // step 2
-//        System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRealPath("images"));
-//        
-//        File tmp = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("images") + "\\"
-//				+ "travelogue.pdf");
-//        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tmp));
-//        System.out.println( "step 2!" );
-        // step 3
-//        document.open();
-//        System.out.println( "step 3!" );
-        // step 4
-//        String str = "<html><head><title>Your Website Title</title></head><body><p>aosksoakfposkfdspo</p></body></html>";
-//        InputStream is = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
-//        System.out.println( "step 4!" );
-//        XMLWorkerHelper.getInstance().parseXHtml(writer, document, is); 
-//        System.out.println( "step 5!" );
-        //step 5
-//         document.close();
-// 
-//        System.out.println( "PDF Created!" );
-//		
-		
-		InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/images/trav.pdf");
+
+	public StreamedContent getTraveloguePDF() throws DocumentException, IOException {
+		// step 1
+		Document document = new Document();
+		System.out.println("step 1!");
+		// step 2
+		System.out.println(FacesContext.getCurrentInstance().getExternalContext().getRealPath("images"));
+
+		File tmp = new File(
+				FacesContext.getCurrentInstance().getExternalContext().getRealPath("images") + "\\" + "travelogue.pdf");
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(tmp));
+		System.out.println("step 2!");
+		// step 3
+		document.open();
+		System.out.println("step 3!");
+		// step 4
+		String str = travelogue.getText();
+		InputStream is = new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
+		System.out.println("step 4!");
+		XMLWorkerHelper.getInstance().parseXHtml(writer, document,
+				is);
+//		new FileInputStream(FacesContext.getCurrentInstance().getExternalContext().getRealPath("index.html"));
+		System.out.println("step 5!");
+		// step 5
+		document.close();
+		System.out.println("PDF Created!");
+
+		InputStream stream = FacesContext.getCurrentInstance().getExternalContext()
+				.getResourceAsStream("/images/travelogue.pdf");
 		StreamedContent file;
-        file = new DefaultStreamedContent(stream, "application/pdf", "qwe.pdf");
-        
-       
-        return file;
-    }
+		file = new DefaultStreamedContent(stream, "application/pdf", travelogue.getName()+".pdf");
+
+		return file;
+	}
 }

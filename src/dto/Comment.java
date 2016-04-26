@@ -10,9 +10,12 @@ public class Comment {
 	
 	public Comment() {
 		super();
+		System.out.println("Comment::Comment");
+		text = "";
 	}
 	public Comment(int id, String text, Date date, String author) {
 		super();
+		System.out.println("Comment::Comment text = "+ text);
 		this.id = id;
 		this.text = text;
 		this.date = date;

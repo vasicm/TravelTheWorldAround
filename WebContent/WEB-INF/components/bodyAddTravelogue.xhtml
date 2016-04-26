@@ -12,6 +12,7 @@
 <ui:composition>
 	<h:form>
 		<p:growl id="messages" showDetail="true" />
+		
 		<p:panel header="Travelogue">
 			<p:messages autoUpdate="true" />
 			<h:panelGrid id="grid" columns="4" cellpadding="5">
@@ -42,7 +43,7 @@
 
 			<h:panelGrid columns="3" style="margin-top: 10px">
 				<p:commandButton value="Save"
-					action="#{travelogueBean.saveTravelogue}" />
+					action="#{travelogueBean.saveTravelogue}" update="messages" />
 
 				<p:commandButton value="Preview" update="display"
 					oncomplete="PF('dlg').show()" />

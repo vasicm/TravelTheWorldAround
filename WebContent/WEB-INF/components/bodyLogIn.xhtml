@@ -18,40 +18,11 @@
 			<h:inputSecret value="#{userBean.user.password}" />
 			<h:outputLabel />
 			<h:commandButton action="#{userBean.login}" value="Login" />
+			<h:outputLabel />
+			<h:commandButton action="#{userBean.loginAsGuest}" value="Login as Guest" />
 		</h:panelGrid>
-		<!--  
-		<div>
-			<a class="twitter-timeline" href="https://twitter.com/klub_putnika"
-				data-widget-id="712309828681637888">Твитови од стране
-				@klub_putnika</a>
-			<script>
-				!function(d, s, id) {
-					var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/
-							.test(d.location) ? 'http' : 'https';
-					if (!d.getElementById(id)) {
-						js = d.createElement(s);
-						js.id = id;
-						js.src = p + "://platform.twitter.com/widgets.js";
-						fjs.parentNode.insertBefore(js, fjs);
-					}
-				}(document, "script", "twitter-wjs");
-			</script>
-		</div>
-		<p:scrollPanel style="width:573px;height:500px" >
-			<h:outputText value="RSS feed" />
-			<p:feedReader value="http://activeadventures.com/blog/feed/" size="5"
-				var="feed">
 
-				<h:outputText value="#{feed.title}"
-					style="font-weight: bold;display:block" />
-				<h:outputText value="#{feed.description.value}" escape="false" />
-				<p:separator />
-			</p:feedReader>
-		</p:scrollPanel>
-		-->
 	</h:form>
-
-
 
 </ui:composition>
 

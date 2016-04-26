@@ -1,10 +1,14 @@
 package beans;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.Date;
 import java.util.List;
 
@@ -16,21 +20,31 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.primefaces.event.RateEvent;
 import org.primefaces.model.UploadedFile;
 
 import dao.CommentDAO;
+import dao.MessageDAO;
 import dao.PhotoDAO;
+import dao.RatingDAO;
 import dao.TravelogueDAO;
+import dao.UserDAO;
 import dto.Comment;
+import dto.Message;
 import dto.Photo;
+import util.SendEmail;
 
 public class PhotoBean {
 	private UploadedFile file;
 	private Photo photo = new Photo();
 	private Comment comment = new Comment();
-
+	private Integer rating;
+	
 	@ManagedProperty(value = "#{userBean}")
 	private UserBean userBean;
+	
+	@ManagedProperty(value = "#{travelogueBean}")
+	private TravelogueBean travelogueBean;
 	
 	public UserBean getUserBean() {
 		return userBean;
@@ -40,6 +54,43 @@ public class PhotoBean {
 		this.userBean = userBean;
 	}
 	
+	public TravelogueBean getTravelogueBean() {
+		return travelogueBean;
+	}
+
+	public void setTravelogueBean(TravelogueBean travelogueBean) {
+		this.travelogueBean = travelogueBean;
+	}
+	public Integer getRating() {
+		return rating;
+	}
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+	public void addMessage(String summary, String detail) {
+		System.out.println("****** addMessage " + detail);
+        FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
+        FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+	public void onrate(RateEvent rateEvent) {
+		System.out.println("onrate " + rating);
+
+		RatingDAO.insertRatingForPhoto(photo.getId(), userBean.getUser().getUsername(), rating);//(travelogue.getId(), userBean.getUser().getUsername(), rating);
+		RatingDAO.updateRatingForPhoto(photo.getId(), userBean.getUser().getUsername(), rating); //Travelogue(travelogue.getId(), userBean.getUser().getUsername(), rating);
+		
+		addMessage("Rate Event", "You rated:" + ((Integer) rateEvent.getRating()).intValue());
+//		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Rate Event",
+//					"You rated:" + ((Integer) rateEvent.getRating()).intValue());			
+//
+//		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	public void oncancel() {
+		addMessage("Cancel Event", "Rate Reset");
+//		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Cancel Event", "Rate Reset");
+//		FacesContext.getCurrentInstance().addMessage(null, message);
+		// redirectToTravelogueView();
+	}
 	public UploadedFile getFile() {
 		System.out.println("getFile");
 		return file;
@@ -79,7 +130,7 @@ public class PhotoBean {
 	}
 
 	public List<Photo> getPhotos() {
-		return PhotoDAO.allPhotos();
+		return PhotoDAO.allPhotos(travelogueBean.getTravelogue().getId());
 	}
 	
 	public void saveComment() {
@@ -115,7 +166,7 @@ public class PhotoBean {
 				photo.setAuthor("vaske");
 				photo.setPath(file.getFileName());
 
-				if (PhotoDAO.insert(photo)) {
+				if (PhotoDAO.insert(photo, travelogueBean.getTravelogue().getId())) {
 					FacesMessage message = new FacesMessage("Succesful", file.getFileName() + " is uploaded.");
 					FacesContext.getCurrentInstance().addMessage(null, message);
 					FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add("slika");
@@ -159,4 +210,27 @@ public class PhotoBean {
 			photo = PhotoDAO.getPhoto(photo.getId());
 		}
 	}
+	
+	public void approve() {
+		addMessage("Notification", "approved");
+
+		PhotoDAO.approve(photo.getId());
+		String eMail = UserDAO.selectByUsername(photo.getAuthor()).geteMail();
+		System.out.println("eMail = "+ eMail);
+		SendEmail.send(eMail, "Notification", "Photo '" + photo.getName() + "' was approved!");
+		MessageDAO.insert(new Message(-1, new Date(), "Photo '" + photo.getName() + "' was approved!", false,
+				userBean.getUser().getUsername(), photo.getAuthor()));
+	}
+
+	public void unapprove() {
+		addMessage("Notification", "unapproved");
+
+		PhotoDAO.unapprove(photo.getId());
+		String eMail = UserDAO.selectByUsername(photo.getAuthor()).geteMail();
+		System.out.println("eMail = "+ eMail);
+		SendEmail.send(eMail, "Notification", "Photo '" + photo.getName() + "' wasn't approved!");
+		MessageDAO.insert(new Message(-1, new Date(), "Photo '" + photo.getName() + "' wasn't approved!",
+				false, userBean.getUser().getUsername(), photo.getAuthor()));
+	}
+	
 }

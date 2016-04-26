@@ -18,6 +18,10 @@
 			<property-name>userBean</property-name>
 			<value>#{userBean}</value>
 		</managed-property>
+		<managed-property>
+			<property-name>travelogueBean</property-name>
+			<value>#{travelogueBean}</value>
+		</managed-property>
 	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>travelogueBean</managed-bean-name>
@@ -38,5 +42,9 @@
 		<managed-bean-class>beans.FileUploadView</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-
+	<managed-bean>
+		<managed-bean-name>flightsBean</managed-bean-name>
+		<managed-bean-class>beans.FlightsBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 </faces-config>

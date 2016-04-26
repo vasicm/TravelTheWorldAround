@@ -23,6 +23,18 @@ public class MessageDAO {
 			+ "and message.to = ? "
 			+ "order by message.send_date";
 	
+	private static final String SQL_MESSAGES_COUNT = "select count(*) as cou from message "
+			+ "where message.to = ? "
+			+ "and message.seen = 0";
+	
+	private static final String SQL_MESSAGES_FROM = "select message.from from message "
+			+ "where message.to = ?"
+			+ "and message.seen = 0";
+	
+	private static final String SQL_MESSAGES_COUNT_FROM = "select count(*) as cou from message "
+			+ "where message.to = ? and message.from = ? "
+			+ "and message.seen = 0";
+	
 	private static final String SQL_INSERT = "INSERT INTO `travel_the_world_around`.`message` "
 			+ "(`send_date`, `text`, `seen`, `from`, `to`) "
 			+ "VALUES (?, ?, ?, ?, ?)";
@@ -35,6 +47,54 @@ public class MessageDAO {
 			+ "`from`=?, "
 			+ "`to`=? "
 			+ "WHERE `id`=?";
+	
+	public static int messagesCount(String userName) {
+		System.out.println("messagesCount");
+		int ret = 0;
+		Connection connection = null;
+		ResultSet rs = null;
+		Message message = null;
+		Object values[] = {userName};
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection,
+					SQL_MESSAGES_COUNT, false, values);
+			rs = pstmt.executeQuery();
+			if (rs.next()){
+				ret = rs.getInt("cou");
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return ret;
+	}
+	
+	public static String messagesFrom(String userName) {
+		System.out.println("messagesCount");
+		String from = "";
+		Connection connection = null;
+		ResultSet rs = null;
+		Message message = null;
+		Object values[] = {userName};
+		try {
+			connection = connectionPool.checkOut();
+			PreparedStatement pstmt = DAOUtil.prepareStatement(connection,
+					SQL_MESSAGES_FROM, false, values);
+			rs = pstmt.executeQuery();
+			if (rs.next()){
+				from = rs.getString("from");
+			}
+			pstmt.close();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
+		} finally {
+			connectionPool.checkIn(connection);
+		}
+		return from;
+	}
 	
 	public static List<Message> allMessages(String userName1, String userName2) {
 		System.out.println("allMessages");
@@ -57,6 +117,10 @@ public class MessageDAO {
 					rs.getString("from"), 
 					rs.getString("to")
 				);
+				if(message.getFrom().equals(userName2) && !message.isSeen()) {
+					message.setSeen(true);
+					update(message);
+				}
 				messages.add(message);
 			}
 			pstmt.close();
